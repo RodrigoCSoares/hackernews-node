@@ -1,0 +1,11 @@
+{
+  "name": "hackernews-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/RodrigoCSoares/hackernews-node.git",
+  "author": "¨RodrigoCSoares¨ <soares.c.rodrigo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "graphql-yoga": "^1.18.0"
+  }
+}
