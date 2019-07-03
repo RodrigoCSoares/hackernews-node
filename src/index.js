@@ -1,16 +1,4 @@
 const { GraphQLServer } = require('graphql-yoga');
-const typeDefs = 
-    'type Query {\
-        info: String!\
-        feed: [Link!]!\
-    }\
-    \
-    type Link {\
-        id: ID!\
-        description: String!\
-        url: String!\
-    }'
-;
 
 let links = [{
     id: 'link-0',
@@ -18,21 +6,48 @@ let links = [{
     description: 'description'
 }];
 
+let idCount = links.length
 const resolvers = {
     Query: {
         info: () => 'This is the API of a Hackernews Clone',
         feed: () => links,
+        link: (parent, args) => links.find(link => link.id == args.id)
     },
 
-    Link: {
-        id: (parent) => parent.id,
-        description: (parent) => parent.description,
-        url: (parent) => parent.url,
+    Mutation: {
+        post: (parent, args) => {
+            const link = {
+                id: `link-${idCount++}`,
+                description: args.description,
+                url: args.url
+            };
+            links.push(link);
+            return link;
+        },
+
+        updateLink: (parent, args) => {
+            for(let i in links) {
+                if(links[i].id == args.id) {
+                    links[i].url = args.url;
+                    links[i].description = args.description;
+                    return links[i];
+                }
+            }
+            return null;
+        },
+
+        deleteLink: (parent, args) => {
+            for(let i in links) {
+                if(links[i].id == args.id) {
+                    return links.splice(i, 1)[0];
+                }
+            }
+        }
     }
 };
 
 const server = new GraphQLServer({
-    typeDefs,
+    typeDefs: './src/schema.graphql',
     resolvers,
 });
 
